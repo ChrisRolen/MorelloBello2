@@ -22,10 +22,11 @@ public class Utenti {
 	private String password;
 	private int LibroCard;
 	private int numberofpoints;
-        private ResultSet rs;
-        private PreparedStatement pstmt;
-        private Connection conn=database.connection();
-        private Statement stmt=conn.createStatement();
+    private ResultSet rs;
+    private PreparedStatement pstmt;
+    private Connection conn=database.connection();
+    private Statement stmt=conn.createStatement();
+        
 	public Utenti(String email, String password) throws SQLException {
 		rs = stmt.executeQuery("SELECT * from utenti WHERE email =" + email+ "AND pasword =" +password);
 		
@@ -46,7 +47,7 @@ public class Utenti {
 		}
 		
 	}else{
-		throw new NoUserFoundException("L'utente non � presente nel database!");
+		throw new NoUserFoundException("L'utente non e' presente nel database!");
 	}
 	}
 
@@ -183,8 +184,8 @@ public class Utenti {
 	
 	public void make_an_order(Utenti utente, String tipodipag) throws SQLException{
 		//Libri.carrello;
-		String query = " insert into ordine (data_ordine, utente, costo_totale, tipo_pagamento, punti_libro)"
-			        + " values (?, ?, ?, ?, ?)";
+		String query = " insert into ordine (data_ordine, utente, costo_totale, tipo_pagamento, punti_libro, email)"
+			        + " values (?, ?, ?, ?, ?, ?)";
 		
 		pstmt = conn.prepareStatement(query);
 		pstmt.setDate(1,  new Date(System.currentTimeMillis()));
@@ -201,17 +202,34 @@ public class Utenti {
 		pstmt.setInt(3, costototale);
 		pstmt.setString(4, tipodipag);
 		pstmt.setInt(5, puntitotali);
+		pstmt.setString(6, utente.getEmail());
 		pstmt.execute();
 		utente.setNumberofpoints((utente.getNumberofpoints() + puntitotali));
 			
 	}
 	
-	public void listoforders(String email) throws SQLException{
+	public ArrayList<Ordine> listoforders(String email) throws SQLException{
 		rs = stmt.executeQuery("SELECT * from ordine WHERE email=" + email);
+		ArrayList<Ordine> lista = new ArrayList<Ordine>();
 		
 		while(rs.next()){
-			
+			Ordine ord = new Ordine(rs.getInt("codice"));
+			lista.add(ord);
 		}
+		
+		return lista;
+		
+	}
+	
+	public ArrayList<Ordine> listoforders(int codice) throws SQLException{
+		rs = stmt.executeQuery("SELECT * from ordine WHERE codice=" + codice);
+		ArrayList<Ordine> lista = new ArrayList<Ordine>();
+		
+		while(rs.next()){
+			Ordine ord = new Ordine(rs.getInt("codice"));
+			lista.add(ord);
+		}
+		return lista;
 		
 	}
 
