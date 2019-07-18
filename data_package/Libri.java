@@ -21,8 +21,11 @@ public class Libri {
 	private String description;
 	private int numberofsoldcopies;
 	private int numberofpoints;
+        private static Connection conn =database.connection();
+        private static PreparedStatement pstmt;
 	private Statement stmt;
         private ResultSet rs;
+        
 	public static ArrayList<Libri> carrello = new ArrayList<Libri>();
 	
 	public Libri(int ISBN) throws SQLException{
@@ -171,8 +174,7 @@ public class Libri {
 		//Libri.carrello;
 		
 		if(utente.isheanadmin(utente.getEmail(), utente.getPassword())){
-                    Connection conn =database.connection();
-                    PreparedStatement pstmt;
+                    
 		String query = " insert into ordine (titolo, autore, casa_editrice, anno_pubblicazione, ISBN, genere, prezzo, descrizione, punti_card, copie_vendute)"
 			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 		
