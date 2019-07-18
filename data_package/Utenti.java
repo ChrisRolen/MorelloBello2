@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.util.Random;
 
 
-public class Utenti extends database{
+public class Utenti {
 	private String name;
 	private String surname;
 	private String address;
@@ -22,7 +22,10 @@ public class Utenti extends database{
 	private String password;
 	private int LibroCard;
 	private int numberofpoints;
-	
+        private ResultSet rs;
+        private PreparedStatement pstmt;
+        private Connection conn=database.connection();
+        private Statement stmt=conn.createStatement();
 	public Utenti(String email, String password) throws SQLException {
 		rs = stmt.executeQuery("SELECT * from utenti WHERE email =" + email+ "AND pasword =" +password);
 		
@@ -43,7 +46,7 @@ public class Utenti extends database{
 		}
 		
 	}else{
-		throw new NoUserFoundException("L'utente non è presente nel database!");
+		throw new NoUserFoundException("L'utente non ï¿½ presente nel database!");
 	}
 	}
 
