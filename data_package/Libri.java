@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class Libri extends database {
+public class Libri {
 	private String title;
 	private String author;
 	private String editor;
@@ -21,7 +21,8 @@ public class Libri extends database {
 	private String description;
 	private int numberofsoldcopies;
 	private int numberofpoints;
-	
+	private Statement stmt;
+        private ResultSet rs;
 	public static ArrayList<Libri> carrello = new ArrayList<Libri>();
 	
 	public Libri(int ISBN) throws SQLException{
@@ -166,10 +167,12 @@ public class Libri extends database {
 		return classifica;
 	}
 	
-	public void new_book(Utenti utente,String title, String author, String editor,int year, int ISBN,String genre,float price, String description,int numberofsoldcopies, int numberofpoints) throws SQLException{
+	public static void  new_book(Utenti utente,String title, String author, String editor,int year, int ISBN,String genre,float price, String description,int numberofsoldcopies, int numberofpoints) throws SQLException{
 		//Libri.carrello;
 		
 		if(utente.isheanadmin(utente.getEmail(), utente.getPassword())){
+                    Connection conn =database.connection();
+                    PreparedStatement pstmt;
 		String query = " insert into ordine (titolo, autore, casa_editrice, anno_pubblicazione, ISBN, genere, prezzo, descrizione, punti_card, copie_vendute)"
 			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 		

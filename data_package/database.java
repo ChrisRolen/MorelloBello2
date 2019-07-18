@@ -9,15 +9,13 @@ import java.sql.*;
  *
  * @author matteo
  */
-public abstract class database {
-    Connection conn;
-    Statement stmt;
-    ResultSet rs;
-    PreparedStatement pstmt;
-    public database() throws SQLException {
-        this.conn = DriverManager.getConnection("jdbc:mysql://localhost/database_progetto?" + "user=root&password=cibermatteo98");
-         stmt=conn.createStatement();
-         
-
+public  class database {
+    public static Connection conn;
+    //Statement stmt;
+    //ResultSet rs;
+    //PreparedStatement pstmt;
+    public static Connection  connection() throws SQLException {
+        conn = DriverManager.getConnection("jdbc:mysql://localhost/database_progetto?" + "user=root&password=cibermatteo98");
+        return conn;
     }
 }
