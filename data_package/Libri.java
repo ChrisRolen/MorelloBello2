@@ -21,8 +21,6 @@ public class Libri {
 	private String description;
 	private int numberofsoldcopies;
 	private int numberofpoints;
-        private static Connection conn =database.connection();
-        private static PreparedStatement pstmt;
 	private Statement stmt;
         private ResultSet rs;
         
@@ -174,7 +172,10 @@ public class Libri {
 		//Libri.carrello;
 		
 		if(utente.isheanadmin(utente.getEmail(), utente.getPassword())){
-                    
+                    Connection conn =database.connection();
+                    PreparedStatement pstmt;
+                    Statement stmt2=conn.createStatement();
+                    ResultSet rs2;
 		String query = " insert into ordine (titolo, autore, casa_editrice, anno_pubblicazione, ISBN, genere, prezzo, descrizione, punti_card, copie_vendute)"
 			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 		
@@ -190,9 +191,34 @@ public class Libri {
 		pstmt.setInt(10, numberofpoints);
 		pstmt.setInt(11, numberofsoldcopies);
 		pstmt.execute();
+                
+                
+                String autori[]=author.split(",");
+                
+                for(int i=0;i<autori.length;i++){
+                    rs2=stmt2.executeQuery("SELECT codice FROM autori WHERE nome="+autori[i]);
+                    if(rs2.next()==true){
+                        add_author(ISBN,rs2.getInt("codice"),conn);
+                    }
+                    else{
+                        Autori.new_author(autori[i]);
+                        rs2=stmt2.executeQuery("SELECT codice FROM autori WHERE nome="+autori[i]);
+                        add_author(ISBN,rs2.getInt("codice"),conn);
+                    }
+                }
+            
 		}
 		
 	}
+        
+        public static void add_author(int ISBN,int codice,Connection conn) throws SQLException{
+            String query2="insert into autori_libri(ISBN,codice) values (?,?)";
+            PreparedStatement pstmt;
+            pstmt=conn.prepareStatement(query2);
+            pstmt.setInt(1, ISBN);
+            pstmt.setInt(2,codice);
+            pstmt.execute();
+        }
 
 	
 }

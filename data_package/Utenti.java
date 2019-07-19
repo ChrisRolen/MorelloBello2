@@ -26,6 +26,7 @@ public class Utenti {
         private PreparedStatement pstmt;
         private Connection conn=database.connection();
         private Statement stmt=conn.createStatement();
+        
 	public Utenti(String email, String password) throws SQLException {
 		rs = stmt.executeQuery("SELECT * from utenti WHERE email =" + email+ "AND pasword =" +password);
 		

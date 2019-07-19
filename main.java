@@ -1,4 +1,5 @@
 
+import gui_package.insert_book;
 import gui_package.main_page;
 
 
@@ -12,6 +13,12 @@ public class main {
 			// Alla Amazon
                         main_page prova=new main_page();
                         prova.setVisible(true);
+                        insert_book book=new insert_book();
+                        prova.getContentPane().removeAll();
+                        prova.getContentPane().add(book);
+                        prova.validate();
+                        book.setVisible(true);
+        
         }
 
 }
