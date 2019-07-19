@@ -182,10 +182,10 @@ public class Utenti {
 			
 	}
 	
-	public void make_an_order(Utenti utente, String tipodipag) throws SQLException{
+	public void make_an_order(Utenti utente, String indirizzi[], String tipodipag) throws SQLException{
 		//Libri.carrello;
-		String query = " insert into ordine (data_ordine, utente, costo_totale, tipo_pagamento, punti_libro, email)"
-			        + " values (?, ?, ?, ?, ?, ?)";
+		String query = " insert into ordine (data_ordine, utente, costo_totale, tipo_pagamento, punti_libro, email, indirizzo)"
+			        + " values (?, ?, ?, ?, ?, ?, ?)";
 		
 		pstmt = conn.prepareStatement(query);
 		pstmt.setDate(1,  new Date(System.currentTimeMillis()));
@@ -194,6 +194,7 @@ public class Utenti {
 		
 		int costototale = 0;
 		int puntitotali = 0;
+		
 		for(Libri a:Libri.carrello){
 			costototale += a.getPrice();
 			puntitotali += a.getNumberofpoints();
@@ -203,6 +204,18 @@ public class Utenti {
 		pstmt.setString(4, tipodipag);
 		pstmt.setInt(5, puntitotali);
 		pstmt.setString(6, utente.getEmail());
+		
+		String indirizzitot= "";
+		indirizzitot.concat(utente.getAddress());
+		indirizzitot.concat(" ");
+		
+		for(String a:indirizzi){
+			indirizzitot.concat(a);
+			indirizzitot.concat(" ");
+		}
+		
+		pstmt.setString(7, indirizzitot);
+		
 		pstmt.execute();
 		utente.setNumberofpoints((utente.getNumberofpoints() + puntitotali));
 			

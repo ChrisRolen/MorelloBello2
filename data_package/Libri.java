@@ -21,8 +21,8 @@ public class Libri {
 	private String description;
 	private int numberofsoldcopies;
 	private int numberofpoints;
-        private static Connection conn =database.connection();
-        private static PreparedStatement pstmt;
+    private static Connection conn = database.connection();
+    private static PreparedStatement pstmt;
 	private Statement stmt;
         private ResultSet rs;
         
@@ -170,6 +170,28 @@ public class Libri {
 		return classifica;
 	}
 	
+	public ArrayList<Libri> classify(String genre) throws SQLException{
+		ArrayList<Libri> classifica = new ArrayList<Libri>();
+		rs = stmt.executeQuery("SELECT * from libri WHERE genere=" + genre);
+		
+		while(rs.next()){
+			Libri book = new Libri(rs.getInt("IBSN"));
+			classifica.add(book);
+		}
+		
+		classifica.sort(new Comparator<Libri>(){
+
+			@Override
+			public int compare(Libri arg0, Libri arg1) {
+				return arg0.getNumberofsoldcopies()- arg1.getNumberofsoldcopies();
+			}
+			
+		});
+		
+		return classifica;
+	}
+	
+	
 	public static void  new_book(Utenti utente,String title, String author, String editor,int year, int ISBN,String genre,float price, String description,int numberofsoldcopies, int numberofpoints) throws SQLException{
 		//Libri.carrello;
 		
@@ -196,4 +218,3 @@ public class Libri {
 
 	
 }
-
