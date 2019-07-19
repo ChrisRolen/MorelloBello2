@@ -1,7 +1,10 @@
-package data_package;
+package MorelloBello2.data_package;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
@@ -18,8 +21,8 @@ public class Libri {
 	private String description;
 	private int numberofsoldcopies;
 	private int numberofpoints;
-    private static Connection conn = database.connection();
-    private static PreparedStatement pstmt;
+        private Connection conn =database.connection();
+        private static PreparedStatement pstmt;
 	private Statement stmt;
         private ResultSet rs;
         
@@ -167,33 +170,11 @@ public class Libri {
 		return classifica;
 	}
 	
-	public ArrayList<Libri> classify(String genre) throws SQLException{
-		ArrayList<Libri> classifica = new ArrayList<Libri>();
-		rs = stmt.executeQuery("SELECT * from libri WHERE genere=" + genre);
-		
-		while(rs.next()){
-			Libri book = new Libri(rs.getInt("IBSN"));
-			classifica.add(book);
-		}
-		
-		classifica.sort(new Comparator<Libri>(){
-
-			@Override
-			public int compare(Libri arg0, Libri arg1) {
-				return arg0.getNumberofsoldcopies()- arg1.getNumberofsoldcopies();
-			}
-			
-		});
-		
-		return classifica;
-	}
-	
-	
-	public static void  new_book(Utenti utente,String title, String author, String editor,int year, int ISBN,String genre,float price, String description,int numberofsoldcopies, int numberofpoints) throws SQLException{
+	public static void  new_book(Utenti utente,String title, String author, String editor,int year, String ISBN,String genre,float price, String description,int numberofsoldcopies, int numberofpoints) throws SQLException{
 		//Libri.carrello;
 		
 		if(utente.isheanadmin(utente.getEmail(), utente.getPassword())){
-                    
+                    Connection conn =database.connection();
 		String query = " insert into ordine (titolo, autore, casa_editrice, anno_pubblicazione, ISBN, genere, prezzo, descrizione, punti_card, copie_vendute)"
 			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 		
@@ -201,17 +182,63 @@ public class Libri {
 		pstmt.setString(1, title);
 		pstmt.setString(2, author);
 		pstmt.setString(3, editor);
-		pstmt.setInt(4, year);
-		pstmt.setInt(6, ISBN);
+		pstmt.setInt(5, year);
+		pstmt.setString(6, ISBN);
 		pstmt.setString(7, genre);
 		pstmt.setFloat(8, price);
 		pstmt.setString(9,description);
 		pstmt.setInt(10, numberofpoints);
 		pstmt.setInt(11, numberofsoldcopies);
 		pstmt.execute();
+                
+                String autori[]=author.split(",");
+                ResultSet rs2;
+                Statement stmt2=conn.createStatement();
+                
+                for(int i=0;i<autori.length;i++){
+                    String query2="SELECT codice from autori where nome="+autori[i];
+                    rs2=stmt2.executeQuery(query2);
+                    if(rs2.next()){
+                        add_author(ISBN,rs2.getInt("codice"),conn);
+                    }
+                    else{
+                        Autori.new_author(autori[i], conn);
+                        rs2=stmt2.executeQuery(query2);
+                        add_author(ISBN,rs2.getInt("codice"),conn);
+                    }
+                }
+                
+                String genere[]=genre.split(",");
+                for(int i=0;i<genere.length;i++){
+                    String query2="SELECT id from generi where nome="+genere[i];
+                    rs2=stmt2.executeQuery(query2);
+                    if(rs2.next()){
+                        add_genre(ISBN,rs2.getInt("id"),conn);
+                    }
+                    else{
+                        Genere.new_genre(genere[i], conn);
+                        rs2=stmt2.executeQuery(query2);
+                        add_genre(ISBN,rs2.getInt("id"),conn);
+                    }
+                }
 		}
 		
 	}
-
+        
+    public static void add_author(String ISBN,int codice,Connection conn) throws SQLException{
+        String query="insert into autori_libri(ISBN,codice) values (?,?)";
+        PreparedStatement pstmt2=conn.prepareStatement(query);
+        pstmt2.setString(1,ISBN);
+        pstmt2.setInt(2, codice);
+        pstmt2.execute();
+    }
+        public static void add_genre(String ISBN,int codice,Connection conn) throws SQLException{
+        String query="insert into genere_libro(ISBN,genere) values (?,?)";
+        PreparedStatement pstmt2=conn.prepareStatement(query);
+        pstmt2.setString(1,ISBN);
+        pstmt2.setInt(2, codice);
+        pstmt2.execute();
+    }
 	
 }
+
