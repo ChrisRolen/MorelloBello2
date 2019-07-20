@@ -209,28 +209,28 @@ public class Libri {
 		
 		if(utente.isAdmin()){
                     Connection conn =database.connection();
-		String query = " insert into ordine (titolo, autore, casa_editrice, anno_pubblicazione, ISBN, genere, prezzo, descrizione, punti_card, copie_vendute)"
-			        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+		String query = " insert into libri (titolo, casa_editrice, anno_pubblicazione, ISBN, prezzo, descrizione, punti_card, copie_vendute)"
+			        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		pstmt = conn.prepareStatement(query);
 		pstmt.setString(1, title);
-		pstmt.setString(2, author);
-		pstmt.setString(3, editor);
-		pstmt.setInt(5, year);
-		pstmt.setString(6, ISBN);
-		pstmt.setString(7, genre);
-		pstmt.setFloat(8, price);
-		pstmt.setString(9,description);
-		pstmt.setInt(10, numberofpoints);
-		pstmt.setInt(11, numberofsoldcopies);
+		
+		pstmt.setString(2, editor);
+		pstmt.setInt(3, year);
+		pstmt.setString(4, ISBN);
+		
+		pstmt.setFloat(5, price);
+		pstmt.setString(6,description);
+		pstmt.setInt(7, numberofpoints);
+		pstmt.setInt(8, numberofsoldcopies);
 		pstmt.execute();
-                
+                System.out.print("prova libro");
                 String autori[]=author.split(",");
                 ResultSet rs2;
                 Statement stmt2=conn.createStatement();
                 
                 for(int i=0;i<autori.length;i++){
-                    String query2="SELECT codice from autori where nome="+autori[i];
+                    String query2="SELECT codice from autori where nome='"+autori[i]+"'";
                     rs2=stmt2.executeQuery(query2);
                     if(rs2.next()){
                         add_author(ISBN,rs2.getInt("codice"),conn);
@@ -238,13 +238,14 @@ public class Libri {
                     else{
                         Autori.new_author(autori[i], conn);
                         rs2=stmt2.executeQuery(query2);
+                        rs2.next();
                         add_author(ISBN,rs2.getInt("codice"),conn);
                     }
                 }
                 
                 String genere[]=genre.split(",");
                 for(int i=0;i<genere.length;i++){
-                    String query2="SELECT id from generi where nome="+genere[i];
+                    String query2="SELECT id from generi where nome='"+genere[i]+"'";
                     rs2=stmt2.executeQuery(query2);
                     if(rs2.next()){
                         add_genre(ISBN,rs2.getInt("id"),conn);
@@ -252,6 +253,7 @@ public class Libri {
                     else{
                         Genere.new_genre(genere[i], conn);
                         rs2=stmt2.executeQuery(query2);
+                        rs2.next();
                         add_genre(ISBN,rs2.getInt("id"),conn);
                     }
                 }
