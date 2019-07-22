@@ -1,4 +1,4 @@
-package MorelloBello2.src.data_package;
+package data_package;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.sql.Connection;
@@ -22,18 +22,16 @@ public class Utenti {
 	private String password;
 	private int LibroCard;
 	private int numberofpoints;
-        private boolean admin;
-
-
     private ResultSet rs;
     private PreparedStatement pstmt;
     private Connection conn=database.connection();
     private Statement stmt=conn.createStatement();
         
 	public Utenti(String email, String password) throws SQLException {
-		rs = stmt.executeQuery("SELECT * FROM database_progetto.utenti where email='"+email+"' and pasword='"+password+"';");
-		System.out.println("SELECT * from utenti WHERE email='" + email+ "' AND pasword='" +password+"';");
-                
+		rs = stmt.executeQuery("SELECT * from utenti WHERE email =" + email+ "AND pasword =" +password);
+		
+	if(rs.next()){
+		
 		while(rs.next()){
 		this.name = rs.getString("nome");
 		this.surname = rs.getString("cognome");
@@ -45,12 +43,12 @@ public class Utenti {
 		this.password = password;
 		this.LibroCard = rs.getInt("libro_card");
 		this.numberofpoints = rs.getInt("numero_punti");
-                this.admin=rs.getBoolean("admin");
-                System.out.print("yeeee");
 		
 		}
 		
-	
+	}else{
+		throw new NoUserFoundException("L'utente non e' presente nel database!");
+	}
 	}
 
 	
@@ -153,9 +151,11 @@ public class Utenti {
 		this.numberofpoints = numberofpoints;
 	}
 
-	public boolean isAdmin() {
-            return admin;
-        }
+	public boolean isheanadmin(String email, String password) throws SQLException{
+		rs = stmt.executeQuery("SELECT * from responsabili WHERE email =" + email + "AND password =" + password);
+		return rs.next();
+	}
+	
 	public void make_an_order(String name, String surname, String address, int CAP, String phone_number, String email, String tipodipag) throws SQLException{
 		//Libri.carrello;
 		String query = " insert into ordine (data_ordine, nome, cognome, "
@@ -246,27 +246,25 @@ public class Utenti {
 		
 	}
 
-	public static void new_User(String email, String password, String name, String surname, String address, int CAP, String city, String phone_number) throws SQLException{
-		String query = " insert into utenti ( nome, cognome, "
-				+ "email, pasword, indirizzo, CAP, citta, telefono, libro_card, data_emissione, numero_punti)"
+	public void new_User(String email, String password, String name, String surname, String address, int CAP, String city, int phone_number) throws SQLException{
+		String query = " insert into ordine (data_ordine, nome, cognome, "
+				+ "email, pasword, nome, cognome, indirizzo, CAP, citta, telefono, libro_card, data_emissione, numero_punti)"
 		        + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement pstmt;
-                Connection conn=database.connection();
+	
 		pstmt = conn.prepareStatement(query);
-		pstmt.setString(1, name);
-		pstmt.setString(2, surname);
-                pstmt.setString(3, email);
-		pstmt.setString(4, password);
+		pstmt.setString(1, email);
+		pstmt.setString(2, password);
+		pstmt.setString(3, name);
+		pstmt.setString(4, surname);
 		pstmt.setString(5,  address);
 		pstmt.setInt(6, CAP);
 		pstmt.setString(7, city);
-		pstmt.setString(8, phone_number);
+		pstmt.setInt(8, phone_number);
 		
 		Random rand = new Random();
 		pstmt.setInt(9, rand.nextInt());
 		pstmt.setDate(10, new Date(System.currentTimeMillis()));
 		pstmt.setInt(11, 0);
 		pstmt.execute();
-                pstmt.close();
 	}
 }

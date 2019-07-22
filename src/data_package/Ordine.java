@@ -1,4 +1,4 @@
-package MorelloBello2.src.data_package;
+package data_package;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -205,7 +205,7 @@ public class Ordine {
 
 
 	public void setStatus(Utenti utente, boolean status) throws SQLException {
-		if(utente.isAdmin()){
+		if(utente.isheanadmin(getEmail(), utente.getPassword())){
 			this.status = status;
 		}
 	}
