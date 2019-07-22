@@ -5,17 +5,50 @@
  */
 package MorelloBello2.src.gui_package;
 
+import MorelloBello2.src.data_package.Libri;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+
 /**
  *
  * @author matteo
  */
-public class insert_book extends javax.swing.JPanel {
+public class modify_book extends javax.swing.JPanel {
 
     /**
      * Creates new form insert_book
      */
-    public insert_book() {
+    public modify_book(Libri libro) {
         initComponents();
+        this.libro=libro;
+        ISBN.setText(libro.getISBN());
+        titolo.setText(libro.getTitle());
+        anno_pubblicazione.setText(Integer.toString(libro.getYear()));
+        prezzo.setText(Float.toString(libro.getPrice()));
+        descrizione.setText(libro.getDescription());
+        casa_produttrice.setText(libro.getEditor());
+        punti_libro.setText(Integer.toString(libro.getNumberofpoints()));
+        ButtonGroup gruppo_disponibilita = new ButtonGroup();
+        gruppo_disponibilita.add(true_button);
+        gruppo_disponibilita.add(false_button);
+        if(libro.isDisponibile()){
+            true_button.setSelected(true);
+        }
+        else{
+            false_button.setSelected(true);
+        }
+        String autoriString="";
+        String generiString="";
+        for(int i=0;i<libro.getAuthor().size();i++){
+            autoriString=autoriString+libro.getAuthor().get(i)+",";
+        }
+        for(int i=0;i<libro.getGenre().size();i++){
+            generiString=generiString+libro.getGenre().get(i)+",";
+        }
+        autori.setText(autoriString);
+        generi.setText(generiString);
     }
 
     /**
@@ -27,6 +60,7 @@ public class insert_book extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        gruppo_disponiblita = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -41,12 +75,15 @@ public class insert_book extends javax.swing.JPanel {
         punti_libro = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        ISBN = new javax.swing.JTextField();
         prezzo = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         descrizione = new javax.swing.JTextArea();
         invio = new javax.swing.JButton();
+        ISBN = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        true_button = new javax.swing.JRadioButton();
+        false_button = new javax.swing.JRadioButton();
 
         jLabel1.setText("titolo");
 
@@ -71,6 +108,17 @@ public class insert_book extends javax.swing.JPanel {
         jScrollPane1.setViewportView(descrizione);
 
         invio.setText("invio");
+        invio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                invioMouseClicked(evt);
+            }
+        });
+
+        jLabel10.setText("disponibilità");
+
+        true_button.setText("true");
+
+        false_button.setText("false");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,42 +128,55 @@ public class insert_book extends javax.swing.JPanel {
                 .addGap(151, 151, 151)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel7)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel7)
+                        .addComponent(jLabel1))
+                    .addComponent(jLabel10))
                 .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(autori)
-                    .addComponent(casa_produttrice)
-                    .addComponent(anno_pubblicazione)
-                    .addComponent(generi)
-                    .addComponent(punti_libro)
-                    .addComponent(ISBN)
-                    .addComponent(prezzo)
-                    .addComponent(titolo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(97, 97, 97)
-                                .addComponent(jLabel9))
+                                .addComponent(false_button)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(casa_produttrice, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(anno_pubblicazione, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(generi, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(punti_libro, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(prezzo, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(titolo)
+                            .addComponent(autori)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ISBN, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(106, 106, 106)
-                                .addComponent(invio)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(invio)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(true_button)
+                        .addGap(0, 506, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(115, 115, 115)
+                .addGap(71, 71, 71)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(ISBN, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -145,28 +206,52 @@ public class insert_book extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(ISBN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(prezzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(prezzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(true_button))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(false_button))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void invioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_invioMouseClicked
+        // TODO add your handling code here:
+        if(true_button.isSelected()){
+            try {
+                
+                libro.modify(ISBN.getText(), titolo.getText(), casa_produttrice.getText(), anno_pubblicazione.getText(), prezzo.getText(), descrizione.getText(), punti_libro.getText(), Integer.toString(libro.getNumberofsoldcopies()), autori.getText(), generi.getText(), true);
+        } catch (SQLException ex) {
+            Logger.getLogger(modify_book.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }else{
+            try {
+                libro.modify(ISBN.getText(), titolo.getText(), casa_produttrice.getText(), anno_pubblicazione.getText(), prezzo.getText(), descrizione.getText(), punti_libro.getText(), Integer.toString(libro.getNumberofsoldcopies()), autori.getText(), generi.getText(), false);
+            } catch (SQLException ex) {
+                Logger.getLogger(modify_book.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_invioMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField ISBN;
+    private javax.swing.JLabel ISBN;
     private javax.swing.JTextField anno_pubblicazione;
     private javax.swing.JTextField autori;
     private javax.swing.JTextField casa_produttrice;
     private javax.swing.JTextArea descrizione;
+    private javax.swing.JRadioButton false_button;
     private javax.swing.JTextField generi;
+    private javax.swing.ButtonGroup gruppo_disponiblita;
     private javax.swing.JButton invio;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -179,5 +264,7 @@ public class insert_book extends javax.swing.JPanel {
     private javax.swing.JTextField prezzo;
     private javax.swing.JTextField punti_libro;
     private javax.swing.JTextField titolo;
+    private javax.swing.JRadioButton true_button;
     // End of variables declaration//GEN-END:variables
+    private Libri libro;
 }

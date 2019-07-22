@@ -3,7 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MorelloBello2.data_package;
+package MorelloBello2.src.data_package;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -11,4 +15,10 @@ package MorelloBello2.data_package;
  */
 public class Genere {
     
+    public static void new_genre(String nome,Connection conn) throws SQLException{
+        String query="insert into generi (nome) values (?)";
+        PreparedStatement pstmt=conn.prepareStatement(query);
+        pstmt.setString(1, nome);
+        pstmt.execute();
+    }
 }

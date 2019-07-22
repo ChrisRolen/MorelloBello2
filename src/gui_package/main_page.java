@@ -3,7 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui_package;
+package MorelloBello2.src.gui_package;
+
+import MorelloBello2.src.data_package.Libri;
+import MorelloBello2.src.data_package.Utenti;
+import MorelloBello2.src.data_package.database;
+import java.awt.BorderLayout;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -12,10 +26,15 @@ package gui_package;
 public class main_page extends javax.swing.JFrame{    /**
      * Creates new form main_page
      */
-    public main_page() {
+    public main_page() throws SQLException {
+        Connection conn=database.connection();
+        Statement stmt=conn.createStatement();
+        ResultSet rs=stmt.executeQuery("select nome from generi");
+        while(rs.next()){
+            generi.add(rs.getString("nome"));
+        }
         initComponents();
-        
-        
+
     }
 
     /**
@@ -37,12 +56,17 @@ public class main_page extends javax.swing.JFrame{    /**
         cerca.setText("cerca");
 
         login.setText("login");
+        login.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                loginMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 690, Short.MAX_VALUE)
+            .addGap(0, 812, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -53,18 +77,19 @@ public class main_page extends javax.swing.JFrame{    /**
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(barra_cerca, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cerca)
-                .addGap(93, 93, 93)
-                .addComponent(login)
-                .addGap(64, 64, 64))
             .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(105, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(barra_cerca, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cerca)
+                        .addGap(93, 93, 93)
+                        .addComponent(login)
+                        .addGap(64, 64, 64))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(78, 78, 78))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,11 +101,20 @@ public class main_page extends javax.swing.JFrame{    /**
                     .addComponent(cerca))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
+        // TODO add your handling code here:
+        login login2 =new login();
+        login2.setVisible(true);
+        getContentPane().remove(jPanel2);
+        getContentPane().add(login2);
+        jPanel2.setVisible(false);
+    }//GEN-LAST:event_loginMouseClicked
 
     /**
      * @param args the command line arguments
@@ -112,7 +146,11 @@ public class main_page extends javax.swing.JFrame{    /**
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new main_page().setVisible(true);
+                try {
+                    new main_page().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(main_page.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -123,4 +161,5 @@ public class main_page extends javax.swing.JFrame{    /**
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton login;
     // End of variables declaration//GEN-END:variables
+    private ArrayList<String> generi=new ArrayList<String>();
 }

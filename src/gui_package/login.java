@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui_package;
+package MorelloBello2.src.gui_package;
 
 /**
  *

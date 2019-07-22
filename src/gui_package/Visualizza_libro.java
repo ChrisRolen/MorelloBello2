@@ -93,7 +93,7 @@ public class Visualizza_libro extends javax.swing.JPanel {
                 .addGap(155, 155, 155)
                 .addComponent(descrizione)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(86, 86, 86)
                 .addComponent(foto)
                 .addGap(177, 177, 177)
